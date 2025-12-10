@@ -1,0 +1,6 @@
+bin/
+obj/
+users.json
+sessions.json
+*.user
+.vs/
