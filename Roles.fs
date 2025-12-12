@@ -1,6 +1,6 @@
 namespace StudentGradesSystem
 
-type Role = Admin | Viewer
+type Role = Admin | Teacher | Viewer
 
 type User = {
     Username: string

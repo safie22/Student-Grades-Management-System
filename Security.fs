@@ -20,6 +20,7 @@ module Authentication =
         else
             let defaultUsers = [
                 { Username = "admin"; Password = "admin123"; Role = Admin }
+                { Username = "teacher"; Password = "teach123"; Role = Teacher }
                 { Username = "viewer"; Password = "guest123"; Role = Viewer }
             ]
             saveUsers defaultUsers
@@ -107,15 +108,18 @@ module Authentication =
 
 module Permissions =
     let canAddStudent (user: User) = user.Role = Admin
-    let canEditStudent (user: User) = user.Role = Admin
+    let canEditStudent (user: User) = user.Role = Admin || user.Role = Teacher
     let canDeleteStudent (user: User) = user.Role = Admin
+    
+    let canAddGrades (user: User) = user.Role = Admin || user.Role = Teacher
+    let canEditGrades (user: User) = user.Role = Admin || user.Role = Teacher
     
     let canViewStudents (user: User) = true
     let canViewGrades (user: User) = true
     let canViewAverages (user: User) = true
     let canViewStatistics (user: User) = true
     
-    let canSaveData (user: User) = user.Role = Admin
+    let canSaveData (user: User) = user.Role = Admin || user.Role = Teacher
     let canLoadData (user: User) = true
 
 module AccessControl =
@@ -135,12 +139,18 @@ module AccessControl =
     let getRoleName (role: Role) =
         match role with
         | Admin -> "Administrator"
+        | Teacher -> "Teacher"
         | Viewer -> "Viewer"
 
     let getUserPermissions (user: User) =
         match user.Role with
         | Admin -> 
             ["Add Student"; "Edit Student"; "Delete Student"; 
+             "Add Grades"; "Edit Grades";
+             "View Students"; "View Grades"; "View Averages"; 
+             "View Statistics"; "Save Data"; "Load Data"]
+        | Teacher ->
+            ["Edit Student"; "Add Grades"; "Edit Grades";
              "View Students"; "View Grades"; "View Averages"; 
              "View Statistics"; "Save Data"; "Load Data"]
         | Viewer -> 
